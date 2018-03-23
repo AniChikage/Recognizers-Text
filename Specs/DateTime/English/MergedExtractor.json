@@ -759,6 +759,7 @@
   "Context": {
     "ReferenceDateTime": "2018-03-23T08:30:00"
   },
+  "NotSupported": "javascript",
   "NotSupportedByDesign": "python",
   "Results": [
     {
@@ -773,10 +774,41 @@
 }
 ,
 {
+  "Input": "2 hours next",
+  "Context": {
+    "ReferenceDateTime": "2018-03-23T08:30:00"
+  },
+  "NotSupported": "javascript",
+  "NotSupportedByDesign": "python",
+  "Results": [
+    {
+      "Text": "2 hours next",
+      "Type": "datetimerange"
+    }
+  ]
+}
+,
+{
+  "Input": "five hours next",
+  "Context": {
+    "ReferenceDateTime": "2018-03-23T08:30:00"
+  },
+  "NotSupported": "javascript",
+  "NotSupportedByDesign": "python",
+  "Results": [
+    {
+      "Text": "five hours next",
+      "Type": "datetimerange"
+    }
+  ]
+}
+,
+{
   "Input": "three hours next week",
   "Context": {
     "ReferenceDateTime": "2018-03-23T11:00:00"
   },
+  "NotSupported": "javascript",
   "NotSupportedByDesign": "python",
   "Results": [
     {
@@ -795,6 +827,7 @@
   "Context": {
     "ReferenceDateTime": "2018-03-23T11:00:00"
   },
+  "NotSupported": "javascript",
   "NotSupportedByDesign": "python",
   "Results": [
     {
@@ -813,6 +846,7 @@
   "Context": {
     "ReferenceDateTime": "2018-03-23T11:00:00"
   },
+  "NotSupported": "javascript",
   "NotSupportedByDesign": "python",
   "Results": [
     {
@@ -831,6 +865,7 @@
   "Context": {
     "ReferenceDateTime": "2018-03-23T11:00:00"
   },
+  "NotSupported": "javascript",
   "NotSupportedByDesign": "python",
   "Results": [
     {
@@ -849,6 +884,7 @@
   "Context": {
     "ReferenceDateTime": "2018-03-23T11:00:00"
   },
+  "NotSupported": "javascript",
   "NotSupportedByDesign": "python",
   "Results": [
     {
@@ -867,6 +903,7 @@
   "Context": {
     "ReferenceDateTime": "2018-03-23T11:00:00"
   },
+  "NotSupported": "javascript",
   "NotSupportedByDesign": "python",
   "Results": [
     {
