@@ -1,0 +1,53 @@
+[
+{
+  "Input": "今日は九パーセントの確率は雨",
+  "Results": [
+    {
+      "Text": "九パーセント",
+      "TypeName": "percentage",
+      "Resolution": {
+        "value": "9%"
+      }
+    }
+  ]
+}
+,
+{
+  "Input": "この車は19パーセントの確率が遅れた",
+  "Results": [
+    {
+      "Text": "19パーセント",
+      "TypeName": "percentage",
+      "Resolution": {
+        "value": "19%"
+      }
+    }
+  ]
+}
+,
+{
+  "Input": "彼女は50パーセントこのことはできません",
+  "Results": [
+    {
+      "Text": "50パーセント",
+      "TypeName": "percentage",
+      "Resolution": {
+        "value": "50%"
+      }
+    }
+  ]
+}
+,
+{
+  "Input": "共有29.5パーセント",
+  "Results": [
+    {
+      "Text": "29.5パーセント",
+      "TypeName": "percentage",
+      "Resolution": {
+        "value": "29.5%"
+      }
+    }
+  ]
+}
+]
