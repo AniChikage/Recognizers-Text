@@ -2,6 +2,7 @@
 {
   "Input": "今日は九パーセントの確率は雨",
   "NotSupported": "javascript",
+  "NotSupportedByDesign": "python",
   "Results": [
     {
       "Text": "九パーセント",
@@ -16,6 +17,7 @@
 {
   "Input": "この車は19パーセントの確率が遅れた",
   "NotSupported": "javascript",
+  "NotSupportedByDesign": "python",
   "Results": [
     {
       "Text": "19パーセント",
@@ -30,6 +32,7 @@
 {
   "Input": "彼女は50パーセントこのことはできません",
   "NotSupported": "javascript",
+  "NotSupportedByDesign": "python",
   "Results": [
     {
       "Text": "50パーセント",
@@ -44,6 +47,7 @@
 {
   "Input": "共有29.5パーセント",
   "NotSupported": "javascript",
+  "NotSupportedByDesign": "python",
   "Results": [
     {
       "Text": "29.5パーセント",
