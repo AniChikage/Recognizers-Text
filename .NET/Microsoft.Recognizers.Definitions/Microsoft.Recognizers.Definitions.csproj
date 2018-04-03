@@ -131,6 +131,11 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>ChoiceDefinitions.tt</DependentUpon>
     </Compile>
+    <Compile Update="Japanese\NumbersDefinitions.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>NumbersDefinitions.tt</DependentUpon>
+    </Compile>
     <Compile Update="Portuguese\ChoiceDefinitions.cs">
       <DesignTime>True</DesignTime>
       <AutoGen>True</AutoGen>
@@ -249,6 +254,10 @@
     <None Update="Japanese\ChoiceDefinitions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <LastGenOutput>ChoiceDefinitions.cs</LastGenOutput>
+    </None>
+    <None Update="Japanese\NumbersDefinitions.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <LastGenOutput>NumbersDefinitions.cs</LastGenOutput>
     </None>
     <None Update="Portuguese\ChoiceDefinitions.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
