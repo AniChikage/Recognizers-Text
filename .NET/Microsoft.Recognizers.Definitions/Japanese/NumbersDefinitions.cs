@@ -74,12 +74,7 @@ namespace Microsoft.Recognizers.Definitions.Japanese
 			{ '６', '6' },
 			{ '７', '7' },
 			{ '８', '8' },
-			{ '９', '9' },
-			{ 'Ｇ', 'G' },
-			{ 'Ｍ', 'M' },
-			{ 'Ｔ', 'T' },
-			{ 'Ｋ', 'K' },
-			{ 'ｋ', 'k' }
+			{ '９', '9' }
 		};
 		public static readonly Dictionary<string, string> UnitMapJpn = new Dictionary<string, string>
 		{
@@ -93,33 +88,82 @@ namespace Microsoft.Recognizers.Definitions.Japanese
 			'億',
 			'兆'
 		};
-		public const string ZeroToNineIntegerRegexJpn = @"[一二三四五六七八九]";
+		public const string DigitalNumberRegex = @"((?<=(\d|\b))(k|t|m|g)(?=\b))";
 		public const string ZeroToNineJpnFullHalfRegexJpn = @"[\d１２３４５６７８９０]";
-		public const string ZeroToNineJpnFullRegexJpn = @"[\d1234567890]";
 		public static readonly string DigitNumRegex = $@"{ZeroToNineJpnFullHalfRegexJpn}+";
-		public const string RoundNumberIntegerRegexJpn = @"[十百千万億兆]";
-		public static readonly string AllIntRegexJpn = $@"(({ZeroToNineIntegerRegexJpn}|{ZeroToNineJpnFullHalfRegexJpn}|[十])\s*{RoundNumberIntegerRegexJpn}){{1,2}}\s*(\s*[以上]?)";
-		public static readonly string OrdinalRegexJpn = $@"(だい|第){AllIntRegexJpn}";
-		public static readonly string OrdinalNumbersRegex = $@"(だい|第){ZeroToNineJpnFullHalfRegexJpn}+";
-		public const string NegativeNumberTermsRegexJpn = @"(マイナス)";
-		public const string NegativeNumberTermsRegexNum = @"(?<![-－])[-－]";
-		public static readonly string NegativeNumberSignRegex = $@"^{NegativeNumberTermsRegexJpn}.*|^{NegativeNumberTermsRegexNum}.*";
-		public const string PointRegexJpnStr = @"[\.．]";
-		public static readonly string PointRegexJpn = $@"{PointRegexJpnStr}";
-		public static readonly string AllFloatRegexJpn = $@"{NegativeNumberTermsRegexJpn}?{AllIntRegexJpn}\s*{PointRegexJpnStr}\s*[一二三四五六七八九](\s*{ZeroToNineIntegerRegexJpn})*";
-		public static readonly string SimplePercentageRegex = $@"({ZeroToNineIntegerRegexJpn}|{AllFloatRegexJpn}|{AllIntRegexJpn})\s*パ\s*ー\s*セ\s*ン\s*ト";
 		public const string PercentageRegex = @".+(?=パ\s*ー\s*セ\s*ン\s*ト)|.*(?=[％%])";
-		public static readonly string NumbersPercentagePointRegex = $@"({ZeroToNineJpnFullHalfRegexJpn}|{ZeroToNineJpnFullRegexJpn})+([\.．]({ZeroToNineJpnFullHalfRegexJpn}|{ZeroToNineJpnFullRegexJpn})+)?\s*パ\s*ー\s*セ\s*ン\s*ト";
-		public static readonly string AllFractionNumber = $@"{NegativeNumberTermsRegexJpn}?(({ZeroToNineJpnFullHalfRegexJpn}+|{NegativeNumberTermsRegexJpn}?({ZeroToNineJpnFullHalfRegexJpn}+|{AllIntRegexJpn})\s*分\s*の\s*{NegativeNumberTermsRegexJpn}?({ZeroToNineJpnFullHalfRegexJpn}+|{AllIntRegexJpn})";
-		public static readonly string FractionNotationSpecialsCharsRegex = $@"({NegativeNumberTermsRegexNum}\s*)?{ZeroToNineJpnFullHalfRegexJpn}+\s+{ZeroToNineJpnFullHalfRegexJpn}+[/／]{ZeroToNineJpnFullHalfRegexJpn}+";
-		public static readonly string FractionNotationRegex = $@"({NegativeNumberTermsRegexNum}\s*)?{ZeroToNineJpnFullHalfRegexJpn}+[/／]{ZeroToNineJpnFullHalfRegexJpn}+";
+		public static readonly string DoubleAndRoundJpnRegex = $@"{ZeroToNineJpnFullHalfRegexJpn}+(\.{ZeroToNineJpnFullHalfRegexJpn}+)?\s*[万億]{{1,2}}(\s*(以上))?";
+		public const string FracSplitRegex = @"分\s*の";
+		public const string ZeroToNineIntegerRegexJpn = @"[一二三四五六七八九]";
+		public const string NegativeNumberTermsRegexJpn = @"マ\s*イ\s*ナ\s*ス";
+		public const string NegativeNumberTermsRegexNum = @"(?<!(\d+\s*)|[-－])[-－]";
+		public static readonly string NegativeNumberSignRegex = $@"^{NegativeNumberTermsRegexJpn}.*|^{NegativeNumberTermsRegexNum}.*";
+		public static readonly string SpeGetNumberRegex = $@"{ZeroToNineJpnFullHalfRegexJpn}|{ZeroToNineIntegerRegexJpn}|[半対]";
+		public const string PairRegex = ".*[対膳]$";
+		public const string RoundNumberIntegerRegexJpn = @"[十百千万億兆]";
+		public const string WhiteListRegex = @"(。|，|、|（|）|”｜国|週間|\s|$)";
+		public static readonly string NotSingleRegexJpn = $@"(({ZeroToNineIntegerRegexJpn}|{ZeroToNineJpnFullHalfRegexJpn}|[十])\s*{RoundNumberIntegerRegexJpn}){{1,2}}\s*(\s*[以上]?)";
+		public static readonly string SingleRegexJpn = $@"(?<!{ZeroToNineIntegerRegexJpn}){ZeroToNineIntegerRegexJpn}(?={WhiteListRegex})";
+		public static readonly string AllIntRegexJpn = $@"(({ZeroToNineIntegerRegexJpn}|{ZeroToNineJpnFullHalfRegexJpn}|[十])\s*{RoundNumberIntegerRegexJpn}){{1,2}}\s*(\s*[以上]?)";
 		public static readonly string NumbersSpecialsChars = $@"(({NegativeNumberTermsRegexNum}|{NegativeNumberTermsRegexJpn})\s*)?{ZeroToNineJpnFullHalfRegexJpn}+";
 		public static readonly string NumbersSpecialsCharsWithSuffix = $@"{NegativeNumberTermsRegexNum}?{ZeroToNineJpnFullHalfRegexJpn}+\s*(K|k|M|G|T|Ｍ|Ｋ|ｋ|Ｇ|Ｔ)";
 		public static readonly string DottedNumbersSpecialsChar = $@"{NegativeNumberTermsRegexNum}?{ZeroToNineJpnFullHalfRegexJpn}{{1,3}}([,，]{ZeroToNineJpnFullHalfRegexJpn}{{3}})+";
-		public static readonly string NumbersWithHalfDozen = $@"半ダース";
-		public static readonly string NumbersWithDozen = $@"({ZeroToNineJpnFullRegexJpn}|{ZeroToNineJpnFullHalfRegexJpn}|{ZeroToNineIntegerRegexJpn})ダース";
+		public static readonly string NumbersWithHalfDozen = $@"半({RoundNumberIntegerRegexJpn}|打)";
+		public static readonly string NumbersWithDozen = $@"{AllIntRegexJpn}[ダース](?!{AllIntRegexJpn})";
+		public const string PointRegexJpnStr = @"[\.．]";
+		public static readonly string AllFloatRegexJpn = $@"{NegativeNumberTermsRegexJpn}?{AllIntRegexJpn}\s*{PointRegexJpnStr}\s*[一二三四五六七八九](\s*{ZeroToNineIntegerRegexJpn})*";
+		public static readonly string NumbersWithAllowListRegex = $@"(?<!({AllIntRegexJpn}*|{AllFloatRegexJpn})*パーセント){NegativeNumberTermsRegexJpn}?({NotSingleRegexJpn}";
+		public static readonly string NumbersAggressiveRegex = $@"(?<!({AllIntRegexJpn}*|{AllFloatRegexJpn})*パーセント){NegativeNumberTermsRegexJpn}?({{NotSingleRegexJpn}}";
+		public static readonly string PointRegexJpn = $@"{PointRegexJpnStr}";
 		public static readonly string DoubleSpecialsChars = $@"(?<!({ZeroToNineJpnFullHalfRegexJpn}+[\.．]{ZeroToNineJpnFullHalfRegexJpn}*))({NegativeNumberTermsRegexNum}\s*)?{ZeroToNineJpnFullHalfRegexJpn}+[\.．]{ZeroToNineJpnFullHalfRegexJpn}+(?!{ZeroToNineJpnFullHalfRegexJpn}*[\.．]{ZeroToNineJpnFullHalfRegexJpn}+)";
 		public static readonly string DoubleSpecialsCharsWithNegatives = $@"(?<!({ZeroToNineJpnFullHalfRegexJpn}+|\.\.|．．))({NegativeNumberTermsRegexNum}\s*)?[\.．]{ZeroToNineJpnFullHalfRegexJpn}+(?!{ZeroToNineJpnFullHalfRegexJpn}*([\.．]{ZeroToNineJpnFullHalfRegexJpn}+))";
 		public static readonly string SimpleDoubleSpecialsChars = $@"({NegativeNumberTermsRegexNum}\s*)?{ZeroToNineJpnFullHalfRegexJpn}{{1,3}}([,，]{ZeroToNineJpnFullHalfRegexJpn}{{3}})+[\.．]{ZeroToNineJpnFullHalfRegexJpn}+";
+		public static readonly string DoubleWithMultiplierRegex = $@"({NegativeNumberTermsRegexNum}\s*)?{ZeroToNineJpnFullHalfRegexJpn}+[\.．]{ZeroToNineJpnFullHalfRegexJpn}+\s*(K|k|M|G|T|Ｍ|Ｋ|ｋ|Ｇ|Ｔ)";
+		public static readonly string DoubleWithThousandsRegex = $@"{NegativeNumberTermsRegexJpn}?{ZeroToNineJpnFullHalfRegexJpn}+([\.．]{ZeroToNineJpnFullHalfRegexJpn}+)?\s*[万亿萬億]{{1,2}}\s*(以上)*";
+		public static readonly string DoubleAllFloatRegex = $@"(?<!(({AllIntRegexJpn}[.]*)|{AllFloatRegexJpn})*){AllFloatRegexJpn}(?!{ZeroToNineIntegerRegexJpn}*\s*パーセント)";
+		public static readonly string DoubleExponentialNotationRegex = $@"(?<!{ZeroToNineJpnFullHalfRegexJpn}+[\.．])({NegativeNumberTermsRegexNum}\s*)?{ZeroToNineJpnFullHalfRegexJpn}+([\.．]{ZeroToNineJpnFullHalfRegexJpn}+)?e(([-－+＋]*[1-9１２３４５６７８９]{ZeroToNineJpnFullHalfRegexJpn}*)|[0０](?!{ZeroToNineJpnFullHalfRegexJpn}+))";
+		public static readonly string DoubleScientificNotationRegex = $@"(?<!{ZeroToNineJpnFullHalfRegexJpn}+[\.．])({NegativeNumberTermsRegexNum}\s*)?({ZeroToNineJpnFullHalfRegexJpn}+([\.．]{ZeroToNineJpnFullHalfRegexJpn}+)?)\^([-－+＋]*[1-9１２３４５６７８９]{ZeroToNineJpnFullHalfRegexJpn}*)";
+		public static readonly string OrdinalRegexJpn = $@"(第|だい){AllIntRegexJpn}";
+		public static readonly string OrdinalNumbersRegex = $@"(第|だい){ZeroToNineJpnFullHalfRegexJpn}+";
+		public static readonly string AllFractionNumber = $@"{NegativeNumberTermsRegexJpn}?(({ZeroToNineJpnFullHalfRegexJpn}+|{NegativeNumberTermsRegexJpn}?({ZeroToNineJpnFullHalfRegexJpn}+|{AllIntRegexJpn})\s*分\s*の\s*{NegativeNumberTermsRegexJpn}?({ZeroToNineJpnFullHalfRegexJpn}+|{AllIntRegexJpn})";
+		public static readonly string FractionNotationSpecialsCharsRegex = $@"({NegativeNumberTermsRegexNum}\s*)?{ZeroToNineJpnFullHalfRegexJpn}+\s+{ZeroToNineJpnFullHalfRegexJpn}+[/／]{ZeroToNineJpnFullHalfRegexJpn}+";
+		public static readonly string FractionNotationRegex = $@"({NegativeNumberTermsRegexNum}\s*)?{ZeroToNineJpnFullHalfRegexJpn}+[/／]{ZeroToNineJpnFullHalfRegexJpn}+";
+		public static readonly string PercentagePointRegex = $@"(?<!{AllIntRegexJpn})({AllFloatRegexJpn}|{AllIntRegexJpn})\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string SimplePercentageRegex = $@"({AllFloatRegexJpn}|{{AllIntRegexJpn|{ZeroToNineIntegerRegexJpn}|[百])\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string NumbersPercentagePointRegex = $@"({ZeroToNineJpnFullHalfRegexJpn}|{{ZeroToNineJpnFullRegexJpn}})+([\.．]({ZeroToNineJpnFullHalfRegexJpn}|{{ZeroToNineJpnFullRegexJpn}})+)?\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string NumbersPercentageWithSeparatorRegex = $@"(?<!{ZeroToNineIntegerRegexJpn}){ZeroToNineJpnFullHalfRegexJpn}{{1,3}}([,，]{ZeroToNineJpnFullHalfRegexJpn}{{3}})+[\.．]{ZeroToNineJpnFullHalfRegexJpn}+\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string NumbersPercentageWithMultiplierRegex = $@"(?<!{ZeroToNineIntegerRegexJpn}){ZeroToNineJpnFullHalfRegexJpn}+[\.．]{ZeroToNineJpnFullHalfRegexJpn}+\s*(K|k|M|G|T|Ｍ|Ｋ|ｋ|Ｇ|Ｔ)\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string FractionPercentagePointRegex = $@"(?<!({ZeroToNineJpnFullHalfRegexJpn}+[\.．])){ZeroToNineJpnFullHalfRegexJpn}+[\.．]{ZeroToNineJpnFullHalfRegexJpn}+(?!([\.．]{ZeroToNineJpnFullHalfRegexJpn}+))\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string FractionPercentageWithSeparatorRegex = $@"{ZeroToNineJpnFullHalfRegexJpn}{{1,3}}([,，]{ZeroToNineJpnFullHalfRegexJpn}{{3}})+[\.．]{ZeroToNineJpnFullHalfRegexJpn}+\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string FractionPercentageWithMultiplierRegex = $@"{ZeroToNineJpnFullHalfRegexJpn}+[\.．]{ZeroToNineJpnFullHalfRegexJpn}+\s*(K|k|M|G|T|Ｍ|Ｋ|ｋ|Ｇ|Ｔ)\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string SimpleNumbersPercentageRegex = $@"(?<!{ZeroToNineIntegerRegexJpn}){ZeroToNineJpnFullHalfRegexJpn}+\s*パ\s*ー\s*セ\s*ン\s*ト(?!([\.．]{ZeroToNineJpnFullHalfRegexJpn}+))";
+		public static readonly string SimpleNumbersPercentageWithMultiplierRegex = $@"(?<!{ZeroToNineIntegerRegexJpn}){ZeroToNineJpnFullHalfRegexJpn}+\s*(K|k|M|G|T|Ｍ|Ｋ|ｋ|Ｇ|Ｔ)\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string SimpleNumbersPercentagePointRegex = $@"(?!{ZeroToNineIntegerRegexJpn}){ZeroToNineJpnFullHalfRegexJpn}{{1,3}}([,，]{ZeroToNineJpnFullHalfRegexJpn}{{3}})+\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string IntegerPercentageRegex = $@"{ZeroToNineJpnFullHalfRegexJpn}+\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string IntegerPercentageWithMultiplierRegex = $@"{ZeroToNineJpnFullHalfRegexJpn}+\s*(K|k|M|G|T|Ｍ|Ｋ|ｋ|Ｇ|Ｔ)\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string NumbersFractionPercentageRegex = $@"{ZeroToNineJpnFullHalfRegexJpn}{{1,3}}([,，]{ZeroToNineJpnFullHalfRegexJpn}{{3}})+\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string SimpleIntegerPercentageRegex = $@"{NegativeNumberTermsRegexNum}?{ZeroToNineJpnFullHalfRegexJpn}+([\.．]{ZeroToNineJpnFullHalfRegexJpn}+)?(\s*)[％%]";
+		public static readonly string NumbersFoldsPercentageRegex = $@"{ZeroToNineJpnFullHalfRegexJpn}(([\.．]?|\s*){ZeroToNineJpnFullHalfRegexJpn})?\s*[の]*\s*割引";
+		public static readonly string FoldsPercentageRegex = $@"{ZeroToNineIntegerRegexJpn}(\s*[.]?\s*{ZeroToNineIntegerRegexJpn})?\s*[の]\s*割引";
+		public static readonly string SimpleFoldsPercentageRegex = $@"{ZeroToNineJpnFullHalfRegexJpn}\s*割(\s*(半|{ZeroToNineJpnFullHalfRegexJpn}))?";
+		public static readonly string SpecialsPercentageRegex = $@"({ZeroToNineIntegerRegexJpn}|[十])\s*割(\s*(半|{ZeroToNineIntegerRegexJpn}))?";
+		public static readonly string NumbersSpecialsPercentageRegex = $@"({ZeroToNineJpnFullHalfRegexJpn}[\.．]{ZeroToNineJpnFullHalfRegexJpn}|[1１][0０])\s*割";
+		public static readonly string SimpleSpecialsPercentageRegex = $@"{ZeroToNineIntegerRegexJpn}\s*[.]\s*{ZeroToNineIntegerRegexJpn}\s*割";
+		public const string SpecialsFoldsPercentageRegex = @"半\s*分|(?<=ダース)";
+		public const string TillRegex = @"(--|-|—|——|~)";
+		public const string MoreRegex = @"(大なり|より大きい|より高い|>)";
+		public const string LessRegex = @"(小なり|より小さい|<)";
+		public const string EqualRegex = @"(等しい|イコール|=)";
+		public const string MoreOrEqual = @"(大なりイコール|小さくない)";
+		public const string MoreOrEqualSuffix = @"(より(大なりイコール|小さくない))";
+		public const string LessOrEqual = @"(小なりイコール|大さくない)";
+		public const string LessOrEqualSuffix = @"(より(小なりイコール|小さくない))";
+		public static readonly string OneNumberRangeMoreRegex1 = $@"({MoreOrEqual}|{MoreRegex})\s*(?<number1>((?!(((，|、)(?!\d+))|((,|、)(?!\d+))|。)).)+)";
+		public const string OneNumberRangeMoreRegex2 = @"(?<number1>((?!((，(?!\d+))|(,(?!\d+))|。)).)+)\s*(より)?(大なり)";
+		public const string OneNumberRangeMoreRegex3 = @"(?<number1>((?!((，(?!\d+))|(,(?!\d+))|。)).)+)\s*(以上)(?![万億]{1,2})";
+		public static readonly string OneNumberRangeLessRegex1 = $@"({LessOrEqual}|{LessRegex})\s*(?<number2>((?!((，(?!\d+))|(,(?!\d+))|。)).)+)";
+		public const string OneNumberRangeLessRegex2 = @"比\s*(?<number2>((?!((，(?!\d+))|(,(?!\d+))|。)).)+)\s*(より)?(小なり)";
+		public const string OneNumberRangeLessRegex3 = @"(?<number2>((?!((，(?!\d+))|(,(?!\d+))|。)).)+)\s*(以下)";
+		public static readonly string OneNumberRangeEqualRegex = $@"{EqualRegex}\s*(?<number1>((?!((，(?!\d+))|(,(?!\d+))|。)).)+)";
 	}
 }

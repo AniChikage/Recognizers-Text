@@ -27,9 +27,9 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
                     , "OrdinalJpn"
                 },
                 {
-                    //だい1234
-                    new Regex(NumbersDefinitions.RoundNumberIntegerRegexJpn, RegexOptions.Singleline)
-                    , "OrdinalJpn"
+                    //2折 ２.５折
+                    new Regex(NumbersDefinitions.NumbersFoldsPercentageRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline)
+                    , "PerSpe"
                 }
             };
 

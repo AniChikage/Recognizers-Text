@@ -43,6 +43,7 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
             PointRegexJpn = new Regex(NumbersDefinitions.PointRegexJpn, RegexOptions.IgnoreCase | RegexOptions.Singleline);
             DigitNumRegex = new Regex(NumbersDefinitions.DigitNumRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline);
             NegativeNumberSignRegex = new Regex(NumbersDefinitions.NegativeNumberSignRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            SpeGetNumberRegex = new Regex(NumbersDefinitions.SpeGetNumberRegex, RegexOptions.Singleline | RegexOptions.IgnoreCase);
             PercentageRegex = new Regex(NumbersDefinitions.PercentageRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline);
         }
 

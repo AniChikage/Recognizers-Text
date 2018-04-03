@@ -27,11 +27,7 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
                 Text = extResultJpn.Text,
                 Type = extResultJpn.Type
             };
-
-
-            Console.WriteLine("extra: " + extra);
-
-
+            
             if (extra == null)
             {
                 return null;
@@ -39,13 +35,11 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
 
             if (extra.Contains("Ordinal"))
             {
-                ret = OrdParseJpn(getExtResultJpn);
-                Console.WriteLine("Ordinal: ");
+                ret = OrdParse(getExtResultJpn);
             }
             else if (extra.Contains("Per"))
             {
                 ret = PerParseJpn(getExtResultJpn);
-                Console.WriteLine("Per: ");
             }
 
             if (ret != null)
@@ -56,6 +50,7 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
             return ret;
         }
 
+        // Replace full digtal numbers with half digtal numbers. "４" and "4" are both legal in Japanese, replace "４" with "4", then deal with "4"
         private string ReplaceFullWithHalf(string text)
         {
             if (string.IsNullOrWhiteSpace(text))
@@ -71,114 +66,7 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
             return builder.ToString();
         }
 
-        private string ReplaceTraWithSim(string text)
-        {
-            if (string.IsNullOrWhiteSpace(text))
-            {
-                return text;
-            }
-
-            var builder = new StringBuilder();
-            foreach (char c in text)
-            {
-                builder.Append(Config.TratoSimMapJpn.ContainsKey(c) ? Config.TratoSimMapJpn[c] : c);
-            }
-            return builder.ToString();
-        }
-
-        protected ParseResult FracParseJpn(ExtractResult extResultJpn)
-        {
-            var result = new ParseResult
-            {
-                Start = extResultJpn.Start,
-                Length = extResultJpn.Length,
-                Text = extResultJpn.Text,
-                Type = extResultJpn.Type
-            };
-
-            var resultText = extResultJpn.Text;
-            var splitResult = Config.FracSplitRegex.Split(resultText);
-            string intPart = "", demoPart = "", numPart = "";
-            if (splitResult.Length == 3)
-            {
-                intPart = splitResult[0];
-                demoPart = splitResult[1];
-                numPart = splitResult[2];
-            }
-            else
-            {
-                intPart = "零";
-                demoPart = splitResult[0];
-                numPart = splitResult[1];
-            }
-
-            var intValue = Config.DigitNumRegex.IsMatch(intPart)
-                ? GetDigitValueJpn(intPart, 1.0)
-                : GetIntValueJpn(intPart);
-
-            var numValue = Config.DigitNumRegex.IsMatch(numPart)
-                ? GetDigitValueJpn(numPart, 1.0)
-                : GetIntValueJpn(numPart);
-
-            var demoValue = Config.DigitNumRegex.IsMatch(demoPart)
-                ? GetDigitValueJpn(demoPart, 1.0)
-                : GetIntValueJpn(demoPart);
-
-            if (Config.NegativeNumberSignRegex.IsMatch(intPart))
-            {
-                result.Value = intValue - numValue / demoValue;
-            }
-            else
-            {
-                result.Value = intValue + numValue / demoValue;
-            }
-
-            result.ResolutionStr = result.Value.ToString();
-            return result;
-        }
-
-        protected ParseResult DouParseJpn(ExtractResult extResultJpn)
-        {
-            var result = new ParseResult
-            {
-                Start = extResultJpn.Start,
-                Length = extResultJpn.Length,
-                Text = extResultJpn.Text,
-                Type = extResultJpn.Type
-            };
-
-            var resultText = extResultJpn.Text;
-
-            if (Config.DoubleAndRoundJpnRegex.IsMatch(resultText))
-            {
-                resultText = ReplaceUnit(resultText);
-                result.Value = GetDigitValueJpn(resultText.Substring(0, resultText.Length - 1),
-                    Config.RoundNumberMapJpn[resultText[resultText.Length - 1]]);
-            }
-            else
-            {
-                resultText = ReplaceUnit(resultText);
-                var splitResult = Config.PointRegexJpn.Split(resultText);
-
-                if (splitResult[0] == "")
-                {
-                    splitResult[0] = "零";
-                }
-
-                if (Config.NegativeNumberSignRegex.IsMatch(splitResult[0]))
-                {
-                    result.Value = GetIntValueJpn(splitResult[0]) - GetPointValue(splitResult[1]);
-                }
-                else
-                {
-                    result.Value = GetIntValueJpn(splitResult[0]) + GetPointValue(splitResult[1]);
-                }
-            }
-
-            result.ResolutionStr = result.Value.ToString();
-            return result;
-        }
-
+        // Parse Japanese unit phrase. "万", "億",...
         private string ReplaceUnit(string resultText)
         {
             foreach (var unit in Config.UnitMapJpn.Keys)
@@ -188,7 +76,7 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
             return resultText;
         }
 
-        protected ParseResult IntParseJpn(ExtractResult extResultJpn)
+        protected ParseResult IntParse(ExtractResult extResultJpn)
         {
             var result = new ParseResult
             {
@@ -196,13 +84,14 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
                 Length = extResultJpn.Length,
                 Text = extResultJpn.Text,
                 Type = extResultJpn.Type,
-                Value = GetIntValueJpn(extResultJpn.Text)
+                Value = GetIntValue(extResultJpn.Text)
             };
 
             result.ResolutionStr = result.Value.ToString();
             return result;
         }
 
+        // Parse Japanese percentage phrase. 
         protected ParseResult PerParseJpn(ExtractResult extResultJpn)
         {
             var result = new ParseResult
@@ -213,8 +102,6 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
                 Type = extResultJpn.Type
             };
 
-            Console.WriteLine("per: " + result.Text);
-
             var resultText = extResultJpn.Text;
             long power = 1;
 
@@ -223,13 +110,9 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
                 resultText = ReplaceFullWithHalf(resultText);
                 resultText = ReplaceUnit(resultText);
 
-                if (resultText == "半折")
+                if (resultText == "半額" || resultText == "半値")
                 {
                     result.Value = 50;
-                }
-                else if (resultText == "10成")
-                {
-                    result.Value = 100;
                 }
                 else
                 {
@@ -240,13 +123,9 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
                     {
                         var intNumberChar = matches[0].Value[0];
 
-                        if (intNumberChar == '对')
+                        if (intNumberChar == '対')
                         {
                             intNumber = 5;
-                        }
-                        else if (intNumberChar == '十' || intNumberChar == '拾')
-                        {
-                            intNumber = 10;
                         }
                         else
                         {
@@ -274,10 +153,6 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
                         {
                             intNumber = 5;
                         }
-                        else if (intNumberChar == '十' || intNumberChar == '拾')
-                        {
-                            intNumber = 10;
-                        }
                         else
                         {
                             intNumber = Config.ZeroToNineMapJpn[intNumberChar];
@@ -290,8 +165,6 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
             else if (extResultJpn.Data.ToString().Contains("Num"))
             {
                 var doubleText = Config.PercentageRegex.Match(resultText).Value;
-
-                Console.WriteLine("num doubleText: " + doubleText);
 
                 if (doubleText.Contains("k") || doubleText.Contains("K") || doubleText.Contains("ｋ") ||
                     doubleText.Contains("Ｋ"))
@@ -314,24 +187,20 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
                     power = 1000000000000;
                 }
 
-                result.Value = GetDigitValueJpn(resultText, power);
+                result.Value = GetDigitValue(resultText, power);
             }
             else
             {
                 var doubleText = Config.PercentageRegex.Match(resultText).Value;
-
-                Console.WriteLine("doubleText: " + doubleText);
-
                 doubleText = ReplaceUnit(doubleText);
 
                 var splitResult = Config.PointRegexJpn.Split(doubleText);
-                Console.WriteLine("splitResult: " + splitResult);
                 if (splitResult[0] == "")
                 {
                     splitResult[0] = "零";
                 }
 
-                var doubleValue = GetIntValueJpn(splitResult[0]);
+                var doubleValue = GetIntValue(splitResult[0]);
                 if (splitResult.Length == 2)
                 {
                     if (Config.NegativeNumberSignRegex.IsMatch(splitResult[0]))
@@ -351,7 +220,7 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
             return result;
         }
 
-        protected ParseResult OrdParseJpn(ExtractResult extResultJpn)
+        protected ParseResult OrdParse(ExtractResult extResultJpn)
         {
             var result = new ParseResult
             {
@@ -361,34 +230,28 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
                 Type = extResultJpn.Type
             };
 
-            Console.WriteLine(result.Start + "," + result.Length + "," + result.Text + "," + result.Type);
-
             var resultText = extResultJpn.Text;
             resultText = resultText.Substring(1);
 
-            Console.WriteLine(resultText.ToString());
-
-            Console.WriteLine("match: " + Config.DigitNumRegex.IsMatch(resultText));
-
             result.Value = Config.DigitNumRegex.IsMatch(resultText)
-                ? GetDigitValueJpn(resultText, 1)
-                : GetIntValueJpn(resultText);
-            Console.WriteLine(result.Value);
+                ? GetDigitValue(resultText, 1)
+                : GetIntValue(resultText);
             result.ResolutionStr = result.Value.ToString();
+
             return result;
         }
 
-        private double GetDigitValueJpn(string intStr, double power)
+        private double GetDigitValue(string intStr, double power)
         {
             var isNegative = false;
+
             if (Config.NegativeNumberSignRegex.IsMatch(intStr))
             {
                 isNegative = true;
                 intStr = intStr.Substring(1);
             }
-            Console.WriteLine("intStr" + intStr);
+
             intStr = ReplaceFullWithHalf(intStr);
-            Console.WriteLine("intStr" + intStr);
             var intValue = GetDigitalValue(intStr, power);
             if (isNegative)
             {
@@ -398,7 +261,7 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
             return intValue;
         }
 
-        private double GetIntValueJpn(string intStr)
+        private double GetIntValue(string intStr)
         {
             intStr = ReplaceUnit(intStr);
             double intValue = 0, partValue = 0, beforeValue = 1;

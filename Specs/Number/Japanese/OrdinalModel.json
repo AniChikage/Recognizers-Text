@@ -1,8 +1,7 @@
 [
 {
   "Input": "だい12",
-  "NotSupported": "javascript",
-  "NotSupportedByDesign": "python",
+  "NotSupported": "javascript, python",
   "Results": [
     {
       "Text": "だい12",
@@ -16,8 +15,7 @@
 ,
 {
   "Input": "だい一億",
-  "NotSupported": "javascript",
-  "NotSupportedByDesign": "python",
+  "NotSupported": "javascript, python",
   "Results": [
     {
       "Text": "だい一億",
@@ -31,8 +29,7 @@
 ,
 {
   "Input": "第一億",
-  "NotSupported": "javascript",
-  "NotSupportedByDesign": "python",
+  "NotSupported": "javascript, python",
   "Results": [
     {
       "Text": "第一億",
@@ -46,8 +43,7 @@
 ,
 {
   "Input": "だい一万回だい十万回",
-  "NotSupported": "javascript",
-  "NotSupportedByDesign": "python",
+  "NotSupported": "javascript, python",
   "Results": [
     {
       "Text": "だい一万",
