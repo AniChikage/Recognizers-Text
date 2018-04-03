@@ -39,7 +39,7 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
             }
             else if (extra.Contains("Per"))
             {
-                ret = PerParseJpn(getExtResultJpn);
+                ret = PerParse(getExtResultJpn);
             }
 
             if (ret != null)
@@ -73,26 +73,12 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
             {
                 resultText = resultText.Replace(unit, Config.UnitMapJpn[unit]);
             }
+
             return resultText;
         }
 
-        protected ParseResult IntParse(ExtractResult extResultJpn)
-        {
-            var result = new ParseResult
-            {
-                Start = extResultJpn.Start,
-                Length = extResultJpn.Length,
-                Text = extResultJpn.Text,
-                Type = extResultJpn.Type,
-                Value = GetIntValue(extResultJpn.Text)
-            };
-
-            result.ResolutionStr = result.Value.ToString();
-            return result;
-        }
-
         // Parse Japanese percentage phrase. 
-        protected ParseResult PerParseJpn(ExtractResult extResultJpn)
+        protected ParseResult PerParse(ExtractResult extResultJpn)
         {
             var result = new ParseResult
             {

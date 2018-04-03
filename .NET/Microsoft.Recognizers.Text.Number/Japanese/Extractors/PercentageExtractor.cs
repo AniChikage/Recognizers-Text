@@ -17,14 +17,70 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
             var regexes = new Dictionary<Regex, string>()
             {
                 {
-                    //百分之五十  百分之一点五
+                    //百パーセント 十五パーセント
                     new Regex(NumbersDefinitions.SimplePercentageRegex, RegexOptions.Singleline),
                               "PerJpn"
                 },
                 {
-                    //百分之５６.２　百分之１２
+                    //19パーセント　１パーセント
                     new Regex(NumbersDefinitions.NumbersPercentagePointRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline),
                               "PerNum"
+                },
+                {
+                    //3,000パーセント  １，１２３パーセント
+                    new Regex(NumbersDefinitions.NumbersPercentageWithSeparatorRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline),
+                              "PerNum"
+                },
+                {
+                    //3.2 k パーセント
+                    new Regex(NumbersDefinitions.NumbersPercentageWithMultiplierRegex, RegexOptions.Singleline),
+                              "PerNum"
+                }
+                ,
+                {
+                    //15kパーセント 
+                    new Regex(NumbersDefinitions.SimpleNumbersPercentageWithMultiplierRegex, RegexOptions.Singleline),
+                              "PerNum"
+                },
+                {
+                // @TODO Example missing
+                new Regex(NumbersDefinitions.SimpleIntegerPercentageRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline),
+                              "PerNum"
+                },
+                {
+                    //2割引 ２.５割引
+                    new Regex(NumbersDefinitions.NumbersFoldsPercentageRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline),
+                              "PerSpe"
+                },
+                {
+                    //三割引 六点五折 七五折
+                    new Regex(NumbersDefinitions.FoldsPercentageRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline),
+                              "PerSpe"
+                },
+                {
+                    //5割 7割半
+                    new Regex(NumbersDefinitions.SimpleFoldsPercentageRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline),
+                              "PerSpe"
+                },
+                {
+                    //七割半
+                    new Regex(NumbersDefinitions.SpecialsPercentageRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline),
+                              "PerSpe"
+                },
+                {
+                    //2割 ２.５割
+                    new Regex(NumbersDefinitions.NumbersSpecialsPercentageRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline),
+                              "PerSpe"
+                },
+                {
+                    //三割
+                    new Regex(NumbersDefinitions.SimpleSpecialsPercentageRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline),
+                              "PerSpe"
+                },
+                {
+                    // @TODO Example missing
+                    new Regex(NumbersDefinitions.SpecialsFoldsPercentageRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline),
+                              "PerSpe"
                 }
             };
 

@@ -131,7 +131,7 @@ namespace Microsoft.Recognizers.Definitions.Japanese
 		public static readonly string PercentagePointRegex = $@"(?<!{AllIntRegexJpn})({AllFloatRegexJpn}|{AllIntRegexJpn})\s*パ\s*ー\s*セ\s*ン\s*ト";
 		public static readonly string SimplePercentageRegex = $@"({AllFloatRegexJpn}|{{AllIntRegexJpn|{ZeroToNineIntegerRegexJpn}|[百])\s*パ\s*ー\s*セ\s*ン\s*ト";
 		public static readonly string NumbersPercentagePointRegex = $@"({ZeroToNineJpnFullHalfRegexJpn}|{{ZeroToNineJpnFullRegexJpn}})+([\.．]({ZeroToNineJpnFullHalfRegexJpn}|{{ZeroToNineJpnFullRegexJpn}})+)?\s*パ\s*ー\s*セ\s*ン\s*ト";
-		public static readonly string NumbersPercentageWithSeparatorRegex = $@"(?<!{ZeroToNineIntegerRegexJpn}){ZeroToNineJpnFullHalfRegexJpn}{{1,3}}([,，]{ZeroToNineJpnFullHalfRegexJpn}{{3}})+[\.．]{ZeroToNineJpnFullHalfRegexJpn}+\s*パ\s*ー\s*セ\s*ン\s*ト";
+		public static readonly string NumbersPercentageWithSeparatorRegex = $@"({ZeroToNineJpnFullHalfRegexJpn}{{1,3}}[,，]{ZeroToNineJpnFullHalfRegexJpn}{{3}})+([\.．]{ZeroToNineJpnFullHalfRegexJpn}+)*\s*パ\s*ー\s*セ\s*ン\s*ト";
 		public static readonly string NumbersPercentageWithMultiplierRegex = $@"(?<!{ZeroToNineIntegerRegexJpn}){ZeroToNineJpnFullHalfRegexJpn}+[\.．]{ZeroToNineJpnFullHalfRegexJpn}+\s*(K|k|M|G|T|Ｍ|Ｋ|ｋ|Ｇ|Ｔ)\s*パ\s*ー\s*セ\s*ン\s*ト";
 		public static readonly string FractionPercentagePointRegex = $@"(?<!({ZeroToNineJpnFullHalfRegexJpn}+[\.．])){ZeroToNineJpnFullHalfRegexJpn}+[\.．]{ZeroToNineJpnFullHalfRegexJpn}+(?!([\.．]{ZeroToNineJpnFullHalfRegexJpn}+))\s*パ\s*ー\s*セ\s*ン\s*ト";
 		public static readonly string FractionPercentageWithSeparatorRegex = $@"{ZeroToNineJpnFullHalfRegexJpn}{{1,3}}([,，]{ZeroToNineJpnFullHalfRegexJpn}{{3}})+[\.．]{ZeroToNineJpnFullHalfRegexJpn}+\s*パ\s*ー\s*セ\s*ン\s*ト";
