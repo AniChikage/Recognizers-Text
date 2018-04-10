@@ -7,7 +7,3 @@ POPD
 PUSHD JavaScript
 CALL build.cmd
 POPD
-
-PUSHD Python
-CALL build.cmd
-POPD

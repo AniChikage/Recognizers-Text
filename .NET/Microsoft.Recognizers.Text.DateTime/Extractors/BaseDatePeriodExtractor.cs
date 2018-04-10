@@ -190,8 +190,7 @@ namespace Microsoft.Recognizers.Text.DateTime
 
                 // within "Days/Weeks/Months/Years" should be handled as dateRange here
                 // if duration contains "Seconds/Minutes/Hours", it should be treated as datetimeRange
-                match = Regex.Match(beforeStr, config.WithinNextPrefixRegex.ToString(),
-                    RegexOptions.RightToLeft | config.WithinNextPrefixRegex.Options);
+                match = config.WithinNextPrefixRegex.Match(beforeStr);
                 if (MatchPrefixRegexInSegment(beforeStr, match))
                 {
                     var startToken = match.Index;
@@ -204,9 +203,7 @@ namespace Microsoft.Recognizers.Text.DateTime
                     }
                 }
 
-                // For cases like "next five days"
-                match = Regex.Match(beforeStr, config.FutureRegex.ToString(),
-                    RegexOptions.RightToLeft | config.FutureRegex.Options);
+                match = this.config.FutureRegex.Match(beforeStr);
                 if (MatchPrefixRegexInSegment(beforeStr, match))
                 {
                     ret.Add(new Token(match.Index, duration.End));
@@ -236,8 +233,7 @@ namespace Microsoft.Recognizers.Text.DateTime
                 }
 
                 // in Range Weeks should be handled as dateRange here
-                match = Regex.Match(beforeStr, config.InConnectorRegex.ToString(),
-                    RegexOptions.RightToLeft | config.InConnectorRegex.Options);
+                match = config.InConnectorRegex.Match(beforeStr);
                 if (MatchPrefixRegexInSegment(beforeStr, match))
                 {
                     var startToken = match.Index;

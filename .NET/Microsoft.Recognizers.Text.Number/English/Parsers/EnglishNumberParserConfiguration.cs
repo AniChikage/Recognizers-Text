@@ -80,31 +80,9 @@ namespace Microsoft.Recognizers.Text.Number.English
 
             for (var i = 0; i < tokenLen; i++)
             {
-                if (tokenList[i].Contains("-"))
+                if ((i < tokenLen - 2) && tokenList[i + 1] == "-")
                 {
-                    var splitedTokens = tokenList[i].Split('-');
-                    if (splitedTokens.Length == 2 && OrdinalNumberMap.ContainsKey(splitedTokens[1]))
-                    {
-                        fracWords.Add(splitedTokens[0]);
-                        fracWords.Add(splitedTokens[1]);
-                    }
-                    else
-                    {
-                        fracWords.Add(tokenList[i]);
-                    }
-                }
-                else if (i < tokenLen - 2 && tokenList[i + 1] == "-")
-                {
-                    if (OrdinalNumberMap.ContainsKey(tokenList[i + 2]))
-                    {
-                        fracWords.Add(tokenList[i]);
-                        fracWords.Add(tokenList[i + 2]);
-                    }
-                    else
-                    {
-                        fracWords.Add(tokenList[i] + tokenList[i + 1] + tokenList[i + 2]);
-                    }
-
+                    fracWords.Add(tokenList[i] + tokenList[i + 1] + tokenList[i + 2]);
                     i += 2;
                 }
                 else

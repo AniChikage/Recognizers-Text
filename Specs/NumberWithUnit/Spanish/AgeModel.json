@@ -221,21 +221,4 @@
     }
   ]
 }
-,
-{
-  "Input": "Tiene unos 40 - 50 años",
-  "NotSupported": "javascript",
-  "Results": [
-    {
-      "Text": "50 años",
-      "Start": 16,
-      "End": 22,
-      "TypeName": "age",
-      "Resolution": {
-        "unit": "Año",
-        "value": "50"
-      }
-    }
-  ]
-}
 ]
