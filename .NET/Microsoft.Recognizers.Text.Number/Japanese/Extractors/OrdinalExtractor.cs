@@ -18,7 +18,7 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
             {
                 {
                     //だい一百五十四
-                    new Regex(NumbersDefinitions.OrdinalRegexJpn, RegexOptions.Singleline)
+                    new Regex(NumbersDefinitions.OrdinalRegex, RegexOptions.Singleline)
                     , "OrdinalJpn"
                 },
                 {

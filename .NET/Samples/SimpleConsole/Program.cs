@@ -15,7 +15,7 @@ namespace SimpleConsole
     class Program
     {
         // Use English for the Recognizers culture
-        private const string defaultCulture = Culture.English;
+        private const string defaultCulture = Culture.Japanese;
 
         static void Main(string[] args)
         {
@@ -26,6 +26,7 @@ namespace SimpleConsole
                 // Read the text to recognize
                 Console.WriteLine("Enter the text to recognize:");
                 string input = Console.ReadLine().Trim();
+                input = "今日この服は5割引になります";
                 Console.WriteLine();
 
                 if (input.ToLower() == "exit")
