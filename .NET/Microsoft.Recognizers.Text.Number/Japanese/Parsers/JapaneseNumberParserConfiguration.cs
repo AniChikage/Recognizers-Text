@@ -33,14 +33,14 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
             CardinalNumberMap = new Dictionary<string, long>().ToImmutableDictionary();
             OrdinalNumberMap = new Dictionary<string, long>().ToImmutableDictionary();
             RoundNumberMap = NumbersDefinitions.RoundNumberMap.ToImmutableDictionary();
-            ZeroToNineMapJpn = NumbersDefinitions.ZeroToNineMapJpn.ToImmutableDictionary();
-            RoundNumberMapJpn = NumbersDefinitions.RoundNumberMapJpn.ToImmutableDictionary();
-            FullToHalfMapJpn = NumbersDefinitions.FullToHalfMapJpn.ToImmutableDictionary();
-            UnitMapJpn = NumbersDefinitions.UnitMapJpn.ToImmutableDictionary();
-            RoundDirectListJpn = NumbersDefinitions.RoundDirectListJpn.ToImmutableList();
+            ZeroToNineMap = NumbersDefinitions.ZeroToNineMap.ToImmutableDictionary();
+            RoundNumberMapChar = NumbersDefinitions.RoundNumberMapChar.ToImmutableDictionary();
+            FullToHalfMap = NumbersDefinitions.FullToHalfMap.ToImmutableDictionary();
+            UnitMap = NumbersDefinitions.UnitMap.ToImmutableDictionary();
+            RoundDirectList = NumbersDefinitions.RoundDirectList.ToImmutableList();
 
             HalfADozenRegex = null;
-            PointRegexJpn = new Regex(NumbersDefinitions.PointRegexJpn, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+            PointRegex = new Regex(NumbersDefinitions.PointRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline);
             DigitNumRegex = new Regex(NumbersDefinitions.DigitNumRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline);
             NegativeNumberSignRegex = new Regex(NumbersDefinitions.NegativeNumberSignRegex, RegexOptions.IgnoreCase | RegexOptions.Singleline);
             SpeGetNumberRegex = new Regex(NumbersDefinitions.SpeGetNumberRegex, RegexOptions.Singleline | RegexOptions.IgnoreCase);
@@ -71,13 +71,13 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
 
         public Regex PercentageRegex { get; private set; }
 
-        public Regex DoubleAndRoundJpnRegex { get; private set; }
+        public Regex DoubleAndRoundRegex { get; private set; }
 
         public Regex FracSplitRegex { get; private set; }
 
         public Regex NegativeNumberSignRegex { get; private set; }
 
-        public Regex PointRegexJpn { get; private set; }
+        public Regex PointRegex { get; private set; }
 
         public Regex SpeGetNumberRegex { get; private set; }
 
@@ -89,17 +89,17 @@ namespace Microsoft.Recognizers.Text.Number.Japanese
 
         public ImmutableDictionary<string, long> RoundNumberMap { get; private set; }
 
-        public ImmutableDictionary<char, double> ZeroToNineMapJpn { get; private set; }
+        public ImmutableDictionary<char, double> ZeroToNineMap { get; private set; }
 
-        public ImmutableDictionary<char, long> RoundNumberMapJpn { get; private set; }
+        public ImmutableDictionary<char, long> RoundNumberMapChar { get; private set; }
 
-        public ImmutableDictionary<char, char> FullToHalfMapJpn { get; private set; }
+        public ImmutableDictionary<char, char> FullToHalfMap { get; private set; }
 
-        public ImmutableDictionary<string, string> UnitMapJpn { get; private set; }
+        public ImmutableDictionary<string, string> UnitMap { get; private set; }
 
-        public ImmutableDictionary<char, char> TratoSimMapJpn { get; private set; }
+        public ImmutableDictionary<char, char> TratoSimMap { get; private set; }
 
-        public ImmutableList<char> RoundDirectListJpn { get; private set; }
+        public ImmutableList<char> RoundDirectList { get; private set; }
 
         public string WordSeparatorToken { get; private set; }
 
