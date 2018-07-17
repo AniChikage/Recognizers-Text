@@ -36,6 +36,7 @@ class SpanishDateTime:
     QuarterRegexYearFront = f'({FullYearRegex}|(?<order>pr[oó]ximo(s)?|[uú]ltimo?|este)\\s+año)\\s+(el\\s+)?(?<cardinal>(primer|primero)|1er|segundo|2do|(tercer|terceo)|3ro|cuarto|4to)\\s+cuatrimestre'
     AllHalfYearRegex = f'^[.]'
     PrefixDayRegex = f'^[.]'
+    CenturySuffixRegex = f'^[.]'
     SeasonRegex = f'\\b(?<season>(([uú]ltim[oa]|est[ea]|el|la|(pr[oó]xim[oa]s?|siguiente))\\s+)?(?<seas>primavera|verano|otoño|invierno)((\\s+del?|\\s*,\\s*)?\\s+({FullYearRegex}|(?<order>pr[oó]ximo|[uú]ltimo|este)\\s+año))?)\\b'
     WhichWeekRegex = f'(semana)(\\s*)(?<number>\\d\\d|\\d|0\\d)'
     WeekOfRegex = f'(semana)(\\s*)((do|da|de))'
@@ -120,6 +121,8 @@ class SpanishDateTime:
     TimeHourNumRegex = f'(?<hour>veintiuno|veintidos|veintitres|veinticuatro|cero|uno|dos|tres|cuatro|cinco|seis|siete|ocho|nueve|diez|once|doce|trece|catorce|quince|diecis([eé])is|diecisiete|dieciocho|diecinueve|veinte)'
     PureNumFromTo = f'((desde|de)\\s+(la(s)?\\s+)?)?({BaseDateTime.HourRegex}|{TimeHourNumRegex})(\\s*(?<leftDesc>{DescRegex}))?\\s*{TillRegex}\\s*({BaseDateTime.HourRegex}|{TimeHourNumRegex})\\s*(?<rightDesc>{PmRegex}|{AmRegex}|{DescRegex})?'
     PureNumBetweenAnd = f'(entre\\s+(la(s)?\\s+)?)({BaseDateTime.HourRegex}|{TimeHourNumRegex})(\\s*(?<leftDesc>{DescRegex}))?\\s*y\\s*(la(s)?\\s+)?({BaseDateTime.HourRegex}|{TimeHourNumRegex})\\s*(?<rightDesc>{PmRegex}|{AmRegex}|{DescRegex})?'
+    SpecificTimeFromTo = f'^[.]'
+    SpecificTimeBetweenAnd = f'^[.]'
     TimeUnitRegex = f'(?<unit>horas|hora|h|minutos|minuto|mins|min|segundos|segundo|secs|sec)\\b'
     TimeFollowedUnit = f'^\\s*{TimeUnitRegex}'
     TimeNumberCombinedWithUnit = f'\\b(?<num>\\d+(\\,\\d*)?)\\s*{TimeUnitRegex}'
@@ -271,7 +274,7 @@ class SpanishDateTime:
                         ('mayo', 5),
                         ('junio', 6),
                         ('julio', 7),
-                        ('abosto', 8),
+                        ('agosto', 8),
                         ('septiembre', 9),
                         ('setiembre', 9),
                         ('octubre', 10),
@@ -392,7 +395,8 @@ class SpanishDateTime:
     ReferenceDatePeriodRegex = f'^[.]'
     FromToRegex = f'\\b(from).+(to)\\b.+'
     SingleAmbiguousMonthRegex = f'^(the\\s+)?(may|march)$'
-    PrepositionSuffixRegex = f'\\b(on|in|at|around|from|to)$'
+    UnspecificDatePeriodRegex = f'^[.]'
+    PrepositionSuffixRegex = f'\\b(on|in|at|around|for|during|since|from|to)$'
     RestOfDateTimeRegex = f'^[\\.]'
     SetWeekDayRegex = f'^[\\.]'
     NightRegex = f'\\b(medionoche|noche)\\b'
@@ -405,4 +409,5 @@ class SpanishDateTime:
     WrittenDecades = dict([('', 0)])
     SpecialDecadeCases = dict([('', 0)])
     DefaultLanguageFallback = 'DMY'
+    DurationDateRestrictions = []
 # pylint: enable=line-too-long

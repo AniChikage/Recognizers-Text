@@ -39,6 +39,7 @@ class FrenchDateTime:
     QuarterRegexYearFront = f'({YearRegex}|l\'année\\s+({PastSuffixRegex}|{NextSuffixRegex})|{RelativeRegex}\\s+ann[eé]e)\\s+(le\\s+)?(?<cardinal>premier|1er|duexi[èe]me|2|troisi[èe]me|3|quatri[èe]me|4)\\s+quarts'
     AllHalfYearRegex = f'^[.]'
     PrefixDayRegex = f'^[.]'
+    CenturySuffixRegex = f'^[.]'
     SeasonRegex = f'\\b((<seas>printemps|été|automne|hiver)+\\s*({NextSuffixRegex}|{PastSuffixRegex}))|(?<season>({RelativeRegex}\\s+)?(?<seas>printemps|[ée]t[ée]|automne|hiver)((\\s+de|\\s*,\\s*)?\\s+({YearRegex}|{RelativeRegex}\\s+l\'ann[eé]e))?)\\b'
     WhichWeekRegex = f'(semaine)(\\s*)(?<number>\\d\\d|\\d|0\\d)'
     WeekOfRegex = f'(semaine)(\\s*)(de)'
@@ -115,6 +116,8 @@ class FrenchDateTime:
     PeriodAmRegex = f'(?<am>matin|d[eu] matin|matin[ée]e)s?'
     PureNumFromTo = f'((du|de|des|depuis)\\s+)?({HourRegex}|{PeriodHourNumRegex})(\\s*(?<leftDesc>{PeriodDescRegex}))?\\s*{TillRegex}\\s*({HourRegex}|{PeriodHourNumRegex})\\s*(?<rightDesc>{PmRegex}|{AmRegex}|{PeriodDescRegex})?'
     PureNumBetweenAnd = f'(entre\\s+)({HourRegex}|{PeriodHourNumRegex})(\\s*(?<leftDesc>{PeriodDescRegex}))?\\s*{RangeConnectorRegex}\\s*({HourRegex}|{PeriodHourNumRegex})\\s*(?<rightDesc>{PmRegex}|{AmRegex}|{PeriodDescRegex})?'
+    SpecificTimeFromTo = f'^[.]'
+    SpecificTimeBetweenAnd = f'^[.]'
     PrepositionRegex = f'(?<prep>^([aà] la|en|sur\\s*l[ea]|sur|de)$)'
     TimeOfDayRegex = f'\\b(?<timeOfDay>((((dans\\s+(l[ea])?\\s+)?((?<early>d[eé]but(\\s+|-)|t[oô]t(\\s+|-)(l[ea]\\s*)?)|(?<late>fin\\s*|fin de(\\s+(la)?)|tard\\s*))?(matin[ée]e|matin|((d|l)?\'?)apr[eè]s[-|\\s*]midi|nuit|soir[eé]e|soir)))|(((\\s+(l[ea])?\\s+)?)(jour|journ[eé]e)))s?)\\b'
     SpecificTimeOfDayRegex = f'\\b(({RelativeRegex}\\s+{TimeOfDayRegex})|({TimeOfDayRegex}\\s*({NextSuffixRegex}))\\b|\\bsoir|\\bdu soir)s?\\b'
@@ -165,6 +168,7 @@ class FrenchDateTime:
     SinceRegex = f'\\b(depuis)\\b'
     AgoPrefixRegex = f'\\b(y a)\\b'
     LaterRegex = f'\\b(plus tard)\\b'
+    AgoRegex = f'^[.]'
     InConnectorRegex = f'\\b(dans|en|sur)\\b'
     WithinNextPrefixRegex = f'^[.]'
     AmDescRegex = f'(h|am\\b|a\\.m\\.|a m\\b|a\\. m\\.|a\\.m\\b|a\\. m\\b)'
@@ -185,6 +189,7 @@ class FrenchDateTime:
     FromRegex2 = f'((depuis|de)(\\s*la(s)?)?)$'
     FromToRegex = f'\\b(du|de|des|depuis).+(à|a|au)\\b.+'
     SingleAmbiguousMonthRegex = f'^(le\\s+)?(may|march)$'
+    UnspecificDatePeriodRegex = f'^[.]'
     PrepositionSuffixRegex = f'\\b(du|de|[àa]|vers|dans)$'
     FlexibleDayRegex = f'(?<DayOfMonth>([A-Za-z]+\\s)?[A-Za-z\\d]+)'
     ForTheRegex = f'\\b(((pour le {FlexibleDayRegex})|(dans (le\\s+)?{FlexibleDayRegex}(?<=(st|nd|rd|th))))(?<end>\\s*(,|\\.|!|\\?|$)))'
@@ -613,4 +618,5 @@ class FrenchDateTime:
     WrittenDecades = dict([('', 0)])
     SpecialDecadeCases = dict([('', 0)])
     DefaultLanguageFallback = 'DMY'
+    DurationDateRestrictions = []
 # pylint: enable=line-too-long

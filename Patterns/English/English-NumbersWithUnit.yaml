@@ -1,4 +1,4 @@
-﻿---
+---
 #AgeExtractorConfiguration
 AgeSuffixList: !dictionary
   types: [ string, string ]
@@ -767,6 +767,7 @@ AmbiguousDimensionUnitList: !list
     - fps
     - pts
     - in
+    - dm
     - \"
 #EnglishNumberWithUnitExtractorConfiguration
 BuildPrefix: !simpleRegex

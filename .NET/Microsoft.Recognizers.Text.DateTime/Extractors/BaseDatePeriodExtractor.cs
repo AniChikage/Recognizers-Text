@@ -34,18 +34,54 @@ namespace Microsoft.Recognizers.Text.DateTime
             tokens.AddRange(SingleTimePointWithPatterns(text, reference));
             tokens.AddRange(MatchComplexCases(text, simpleCasesResults, reference));
             tokens.AddRange(MatchYearPeriod(text, reference));
+            tokens.AddRange(MatchOrdinalNumberWithCenturySuffix(text, reference));
 
             return Token.MergeAllTokens(tokens, text, ExtractorName);
+        }
+
+        // Cases like "21st century"
+        private List<Token> MatchOrdinalNumberWithCenturySuffix(string text, DateObject reference)
+        {
+            var ret = new List<Token>();
+            var ers = this.config.OrdinalExtractor.Extract(text);
+
+            foreach (var er in ers)
+            {
+                if (er.Start + er.Length >= text.Length)
+                {
+                    continue;
+                }
+
+                var afterString = text.Substring((er.Start + er.Length).Value);
+                var trimmedAfterString = afterString.TrimStart();
+                var whiteSpacesCount = afterString.Length - trimmedAfterString.Length;
+                var afterStringOffset = (er.Start + er.Length).Value + whiteSpacesCount;
+
+                var match = this.config.CenturySuffixRegex.Match(trimmedAfterString);
+                
+                if (match.Success)
+                {
+                    ret.Add(new Token(er.Start.Value, afterStringOffset + match.Index + match.Length));
+                }
+            }
+
+            return ret;
         }
 
         private List<Token> MatchYearPeriod(string text, DateObject referece)
         {
             var ret = new List<Token>();
+            var metadata = new Metadata()
+            {
+                PossiblyIncludePeriodEnd = true
+            };
 
             var matches = this.config.YearPeriodRegex.Matches(text);
             foreach (Match match in matches)
             {
                 var matchYear = this.config.YearRegex.Match(match.Value);
+
+                // Single year cases like "1998"
                 if (matchYear.Success && matchYear.Length == match.Value.Length)
                 {
                     var year = ((BaseDateExtractor)this.config.DatePointExtractor).GetYearFromText(matchYear);
@@ -53,8 +89,14 @@ namespace Microsoft.Recognizers.Text.DateTime
                     {
                         continue;
                     }
+                    else
+                    {
+                        // Possibly include period end only apply for cases like "2014-2018", which are not single year cases
+                        metadata.PossiblyIncludePeriodEnd = false;
+                    }
                 }
-                ret.Add(new Token(match.Index, match.Index + match.Length));
+
+                ret.Add(new Token(match.Index, match.Index + match.Length, metadata));
             }
 
             return ret;
@@ -102,13 +144,17 @@ namespace Microsoft.Recognizers.Text.DateTime
         private List<Token> MergeTwoTimePoints(string text, DateObject reference)
         {
             var er = this.config.DatePointExtractor.Extract(text, reference);
-
+            
             return MergeMultipleExtractions(text, er);
         }
 
         private List<Token> MergeMultipleExtractions(string text, List<ExtractResult> extractionResults)
         {
             var ret = new List<Token>();
+            var metadata = new Metadata()
+            {
+                PossiblyIncludePeriodEnd = true
+            };
 
             if (extractionResults.Count <= 1)
             {
@@ -142,7 +188,7 @@ namespace Microsoft.Recognizers.Text.DateTime
                         periodBegin = fromIndex;
                     }
 
-                    ret.Add(new Token(periodBegin, periodEnd));
+                    ret.Add(new Token(periodBegin, periodEnd, metadata));
 
                     // merge two tokens here, increase the index by two
                     idx += 2;
@@ -159,7 +205,7 @@ namespace Microsoft.Recognizers.Text.DateTime
                     if (this.config.GetBetweenTokenIndex(beforeStr, out int beforeIndex))
                     {
                         periodBegin = beforeIndex;
-                        ret.Add(new Token(periodBegin, periodEnd));
+                        ret.Add(new Token(periodBegin, periodEnd, metadata));
 
                         // merge two tokens here, increase the index by two
                         idx += 2;
@@ -172,7 +218,8 @@ namespace Microsoft.Recognizers.Text.DateTime
             return ret;
         }
 
-        //Extract the month of date, week of date to a date range
+        // 1. Extract the month of date, week of date to a date range
+        // 2. Extract cases like within two weeks from/before today/tomorrow/yesterday
         private List<Token> SingleTimePointWithPatterns(string text, DateObject reference)
         {
             var ret = new List<Token>();
@@ -189,10 +236,49 @@ namespace Microsoft.Recognizers.Text.DateTime
                     string beforeString = text.Substring(0, (int)extractionResult.Start);
                     ret.AddRange(GetTokenForRegexMatching(beforeString, config.WeekOfRegex, extractionResult));
                     ret.AddRange(GetTokenForRegexMatching(beforeString, config.MonthOfRegex, extractionResult));
+
+                    // Cases like "3 days from today", "2 weeks before yesterday", "3 months after tomorrow"
+                    if (IsRelativeDurationDate(extractionResult))
+                    {
+                        ret.AddRange(GetTokenForRegexMatching(beforeString, config.LessThanRegex, extractionResult));
+                        ret.AddRange(GetTokenForRegexMatching(beforeString, config.MoreThanRegex, extractionResult));
+
+                        // For "within" case, only duration with relative to "today" or "now" makes sense
+                        // Cases like "within 3 days from yesterday/tomorrow" does not make any sense
+                        if (IsDateRelativeToNowOrToday(extractionResult))
+                        {
+                            var match = this.config.WithinNextPrefixRegex.Match(beforeString);
+                            if (match.Success)
+                            {
+                                var isNext = !string.IsNullOrEmpty(match.Groups[Constants.NextGroupName].Value);
+
+                                // For "within" case
+                                // Cases like "within the next 5 days before today" is not acceptable
+                                if (!(isNext && IsAgoRelativeDurationDate(extractionResult)))
+                                {
+                                    ret.AddRange(GetTokenForRegexMatching(beforeString, config.WithinNextPrefixRegex, extractionResult));
+                                }
+                            }
+                        }
+                    }
                 }
             }
 
             return ret;
+        }
+
+        // Cases like "3 days from today", "2 weeks before yesterday", "3 months after tomorrow"
+        private bool IsRelativeDurationDate(ExtractResult er)
+        {
+            var isAgo = this.config.AgoRegex.Match(er.Text).Success;
+            var isLater = this.config.LaterRegex.Match(er.Text).Success;
+
+            return isAgo || isLater;
+        }
+
+        private bool IsAgoRelativeDurationDate(ExtractResult er)
+        {
+            return this.config.AgoRegex.Match(er.Text).Success;
         }
 
         private List<Token> GetTokenForRegexMatching(string text, Regex regex, ExtractResult er)
@@ -287,19 +373,6 @@ namespace Microsoft.Recognizers.Text.DateTime
                     ret.Add(new Token(duration.Start, duration.End + match.Index + match.Length));
                     continue;
                 }
-
-                // in Range Weeks should be handled as dateRange here
-                match = Regex.Match(beforeStr, config.InConnectorRegex.ToString(),
-                    RegexOptions.RightToLeft | config.InConnectorRegex.Options);
-                if (MatchPrefixRegexInSegment(beforeStr, match))
-                {
-                    var startToken = match.Index;
-                    match = config.RangeUnitRegex.Match(text.Substring(duration.Start, duration.Length));
-                    if (match.Success)
-                    {
-                        ret.Add(new Token(startToken, duration.End));
-                    }
-                }
             }
 
             return ret;
@@ -317,7 +390,17 @@ namespace Microsoft.Recognizers.Text.DateTime
             return result;
         }
 
+        private bool IsDateRelativeToNowOrToday(ExtractResult er)
+        {
+            foreach (var flagWord in config.DurationDateRestrictions)
+            {
+                if (er.Text.Contains(flagWord))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
     }
-
-
 }

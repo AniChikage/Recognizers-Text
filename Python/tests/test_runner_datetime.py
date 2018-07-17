@@ -19,8 +19,10 @@ def test_datetime_extractor(culture, model, options, context, source, expected_r
 
     assert len(result) == len(expected_results)
     for actual, expected in zip(result, expected_results):
-        assert actual.text == expected['Text']
-        assert actual.type == expected['Type']
+        simple_extractor_assert(actual, expected, 'text', 'Text')
+        simple_extractor_assert(actual, expected, 'type', 'Type')
+        simple_extractor_assert(actual, expected, 'start', 'Start')
+        simple_extractor_assert(actual, expected, 'length', 'Length')
 
 @pytest.mark.parametrize('culture, model, options, context, source, expected_results', get_specs(recognizer='DateTime', entity='Parser'))
 def test_datetime_parser(culture, model, options, context, source, expected_results):
@@ -33,14 +35,15 @@ def test_datetime_parser(culture, model, options, context, source, expected_resu
     result = [parser.parse(x, reference_datetime) for x in extract_results]
     assert len(result) == len(expected_results)
     for actual, expected in zip(result, expected_results):
-        assert actual.text == expected['Text']
-        assert actual.type == expected['Type']
+        simple_parser_assert(actual, expected, 'text', 'Text')
+        simple_parser_assert(actual, expected, 'type', 'Type')
         if 'Value' in expected:
             assert actual.value
         if actual.value and 'Value' in expected:
-            assert actual.value.timex == expected['Value']['Timex']
-            assert actual.value.future_resolution == expected['Value']['FutureResolution']
-            assert actual.value.past_resolution == expected['Value']['PastResolution']
+            simple_parser_assert(actual.value, expected['Value'], 'timex', 'Timex')
+            simple_parser_assert(actual.value, expected['Value'], 'mod', 'Mod')
+            simple_parser_assert(actual.value, expected['Value'], 'future_resolution', 'FutureResolution')
+            simple_parser_assert(actual.value, expected['Value'], 'past_resolution', 'PastResolution')
 
 @pytest.mark.parametrize('culture, model, options, context, source, expected_results', get_specs(recognizer='DateTime', entity='MergedParser'))
 def test_datetime_mergedparser(culture, model, options, context, source, expected_results):
@@ -53,8 +56,10 @@ def test_datetime_mergedparser(culture, model, options, context, source, expecte
     result = [parser.parse(x, reference_datetime) for x in extract_results]
     assert len(result) == len(expected_results)
     for actual, expected in zip(result, expected_results):
-        assert actual.text == expected['Text']
-        assert actual.type == expected['Type']
+        simple_extractor_assert(actual, expected, 'text', 'Text')
+        simple_extractor_assert(actual, expected, 'type', 'Type')
+        simple_extractor_assert(actual, expected, 'start', 'Start')
+        simple_extractor_assert(actual, expected, 'length', 'Length')
         if 'Value' in expected:
             assert actual.value
         if actual.value and 'Value' in expected:
@@ -73,8 +78,11 @@ def test_datetime_model(culture, model, options, context, source, expected_resul
 
     assert len(result) == len(expected_results)
     for actual, expected in zip(result, expected_results):
-        assert actual.text == expected['Text']
-        assert actual.type_name == expected['TypeName']
+        simple_parser_assert(actual, expected, 'text', 'Text')
+        simple_parser_assert(actual, expected, 'type_name', 'TypeName')
+        simple_parser_assert(actual, expected, 'parent_text', 'ParentText')
+        simple_parser_assert(actual, expected, 'start', 'Start')
+        simple_parser_assert(actual, expected, 'end', 'End')
         assert len(actual.resolution['values']) == len(expected['Resolution']['values'])
         for actual_resilution_value, expected_resoulution_value in zip(actual.resolution['values'], expected['Resolution']['values']):
             assert_model_resolution(actual_resilution_value, expected_resoulution_value)
@@ -93,7 +101,19 @@ def assert_model_resolution(actual, expected):
     single_assert(actual, expected, 'end')
     single_assert(actual, expected, 'Mod')
 
+def simple_extractor_assert(actual, expected, prop, resolution):
+    if resolution in expected:
+        assert getattr(actual, prop) == expected[resolution]
+
+def simple_parser_assert(actual, expected, prop, resolution):
+    if resolution in expected:
+        assert getattr(actual, prop) == expected[resolution]
+
 def create_extractor(language, model, options):
+    extractor = get_class('recognizers_date_time', f'{language}{model}Extractor')
+    if extractor:
+        return extractor()
+
     extractor = get_class(f'recognizers_date_time.date_time.{language.lower()}.{model.lower()}',
                           f'{language}{model}Extractor')
     if extractor:
@@ -111,6 +131,10 @@ def create_extractor(language, model, options):
     return extractor(configuration())
 
 def create_parser(language, model, options):
+    parser = get_class(f'recognizers_date_time.date_time.{language.lower()}.{model.lower()}_parser', f'{language}{model}Parser')
+    if parser:
+        return parser()
+
     parser = get_class(f'recognizers_date_time.date_time.{language.lower()}.parsers', f'{language}{model}Parser')
     if not parser:
         parser = get_class(f'recognizers_date_time.date_time.base_{model.lower()}',

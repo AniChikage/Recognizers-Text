@@ -43,6 +43,7 @@ class PortugueseDateTime:
     RangeUnitRegex = f'\\b(?<unit>anos|ano|meses|m[êe]s|semanas|semana)\\b'
     InConnectorRegex = f'\\b(em)\\b'
     WithinNextPrefixRegex = f'^[.]'
+    CenturySuffixRegex = f'^[.]'
     FromRegex = f'((desde|de)(\\s*a(s)?)?)$'
     ConnectorAndRegex = f'(e\\s*([àa](s)?)?)$'
     BetweenRegex = f'(entre\\s*([oa](s)?)?)'
@@ -121,6 +122,8 @@ class PortugueseDateTime:
     TimeHourNumRegex = f'(?<hour>vinte e um|vinte e dois|vinte e tr[êe]s|vinte e quatro|zero|um|uma|dois|duas|tr[êe]s|quatro|cinco|seis|sete|oito|nove|dez|onze|doze|treze|quatorze|catorze|quinze|dez[ea]sseis|dez[ea]ssete|dezoito|dez[ea]nove|vinte)'
     PureNumFromTo = f'((desde|de|da|das)\\s+(a(s)?\\s+)?)?({BaseDateTime.HourRegex}|{TimeHourNumRegex})(\\s*(?<leftDesc>{DescRegex}))?\\s*{TillRegex}\\s*({BaseDateTime.HourRegex}|{TimeHourNumRegex})\\s*(?<rightDesc>{PmRegex}|{AmRegex}|{DescRegex})?'
     PureNumBetweenAnd = f'(entre\\s+((a|as)?\\s+)?)({BaseDateTime.HourRegex}|{TimeHourNumRegex})(\\s*(?<leftDesc>{DescRegex}))?\\s*e\\s*(a(s)?\\s+)?({BaseDateTime.HourRegex}|{TimeHourNumRegex})\\s*(?<rightDesc>{PmRegex}|{AmRegex}|{DescRegex})?'
+    SpecificTimeFromTo = f'^[.]'
+    SpecificTimeBetweenAnd = f'^[.]'
     TimeUnitRegex = f'(?<unit>horas|hora|h|minutos|minuto|mins|min|segundos|segundo|secs|sec)\\b'
     TimeFollowedUnit = f'^\\s*{TimeUnitRegex}'
     TimeNumberCombinedWithUnit = f'\\b(?<num>\\d+(\\,\\d*)?)\\s*{TimeUnitRegex}'
@@ -407,6 +410,7 @@ class PortugueseDateTime:
     ReferenceDatePeriodRegex = f'^[.]'
     FromToRegex = f'\\b(from).+(to)\\b.+'
     SingleAmbiguousMonthRegex = f'^(the\\s+)?(may|march)$'
+    UnspecificDatePeriodRegex = f'^[.]'
     PrepositionSuffixRegex = f'\\b(on|in|at|around|from|to)$'
     RestOfDateTimeRegex = f'^[\\.]'
     SetWeekDayRegex = f'^[\\.]'
@@ -426,4 +430,5 @@ class PortugueseDateTime:
     WrittenDecades = dict([('', 0)])
     SpecialDecadeCases = dict([('', 0)])
     DefaultLanguageFallback = 'DMY'
+    DurationDateRestrictions = []
 # pylint: enable=line-too-long

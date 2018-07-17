@@ -163,7 +163,7 @@ public class EnglishNumeric {
     public static final String NumberWithPrepositionPercentage = "({BaseNumbers.NumberReplaceToken})\\s*(in|out\\s+of)\\s*({BaseNumbers.NumberReplaceToken})"
             .replace("{BaseNumbers.NumberReplaceToken}", BaseNumbers.NumberReplaceToken);
 
-    public static final String TillRegex = "(to|through|--|-|—|——|~)";
+    public static final String TillRegex = "(to|through|--|-|—|——|~|–)";
 
     public static final String MoreRegex = "((bigger|greater|more|higher|larger)(\\s+than)?|above|over|>)";
 
@@ -255,6 +255,8 @@ public class EnglishNumeric {
     public static final String TwoNumberRangeRegex4 = "(from\\s+)?(?<number1>({NumberSplitMark}(?!\\bfrom\\b).)+)\\s*{TillRegex}\\s*(the\\s+)?(?<number2>({NumberSplitMark}.)+)"
             .replace("{TillRegex}", TillRegex)
             .replace("{NumberSplitMark}", NumberSplitMark);
+
+    public static final String AmbiguousFractionConnectorsRegex = "(\\bin\\b)";
 
     public static final Character DecimalSeparatorChar = '.';
 
