@@ -40,3 +40,4 @@ CALL pip install -r .\tests\requirements.txt
 ECHO.
 ECHO # Running tests
 CALL pytest --tb=line
+PAUSE
